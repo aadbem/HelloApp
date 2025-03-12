@@ -1,0 +1,212 @@
+{
+  "description": "Hello Application Value Stream",
+  "query": null,
+  "phases": [
+    {
+      "name": "Plan",
+      "description": "",
+      "stages": [
+        {
+          "name": "Submitted",
+          "query": "issue.status=Submitted",
+          "description": "",
+          "targets": [
+            "Backlog"
+          ],
+          "wipLimit": null,
+          "showAlerts": true,
+          "showSpeed": true,
+          "gates": null
+        },
+        {
+          "name": "Backlog",
+          "query": "issue.status=Backlog",
+          "description": "",
+          "targets": [
+            "Analyze",
+            "Work"
+          ],
+          "wipLimit": null,
+          "showAlerts": true,
+          "showSpeed": true,
+          "gates": null
+        },
+        {
+          "name": "Analyze",
+          "query": "issue.status=Analyze",
+          "description": "",
+          "targets": [
+            "Work"
+          ],
+          "wipLimit": 2,
+          "showAlerts": true,
+          "showSpeed": true,
+          "gates": null
+        }
+      ]
+    },
+    {
+      "name": "Develop",
+      "description": "",
+      "stages": [
+        {
+          "name": "Work",
+          "query": "issue.status=Work",
+          "description": "",
+          "targets": [
+            "Review",
+            "Test"
+          ],
+          "wipLimit": 4,
+          "showAlerts": true,
+          "showSpeed": true,
+          "gates": null
+        },
+        {
+          "name": "Review",
+          "query": "pr.status=open",
+          "description": "",
+          "targets": [
+            "Test"
+          ],
+          "wipLimit": 4,
+          "showAlerts": true,
+          "showSpeed": true,
+          "gates": null
+        }
+      ]
+    },
+    {
+      "name": "Deploy",
+      "description": "",
+      "stages": [
+        {
+          "name": "Test",
+          "query": "issue.status=Test",
+          "description": "",
+          "targets": [
+            "Demo"
+          ],
+          "wipLimit": 4,
+          "showAlerts": true,
+          "showSpeed": true,
+          "gates": null
+        },
+        {
+          "name": "Demo",
+          "query": "issue.status=Demo",
+          "description": "",
+          "targets": [
+            "Prod"
+          ],
+          "wipLimit": 4,
+          "showAlerts": true,
+          "showSpeed": true,
+          "gates": null
+        }
+      ]
+    },
+    {
+      "name": "Complete",
+      "description": "",
+      "stages": [
+        {
+          "name": "Prod",
+          "query": "issue.status=Closed",
+          "description": "",
+          "targets": [],
+          "wipLimit": null,
+          "showAlerts": true,
+          "showSpeed": true,
+          "gates": null
+        }
+      ]
+    }
+  ],
+  "leadTimeChange": {
+    "start": null,
+    "end": null
+  },
+  "leadTime": {
+    "start": "Backlog",
+    "end": "Prod"
+  },
+  "cycleTime": {
+    "start": "Work",
+    "end": "Prod"
+  },
+  "devCycleTime": {
+    "start": null,
+    "end": null
+  },
+  "mappings": {
+    "priority": {
+      "Low": [
+        "Low"
+      ],
+      "Medium": [
+        "Medium"
+      ],
+      "High": [
+        "High"
+      ]
+    }
+  },
+  "integrations": [
+    {
+      "_id": "67d0b120fba251001c3f35f9",
+      "type": "ucv-ext-ucd",
+      "tenant_id": "5ade13625558f2c6688d15ce",
+      "name": "Deploy_Plugin",
+      "disabled": false,
+      "properties": {
+        "baseUrl": "http://laptop-d7bj5q3g:8080/",
+        "deployToken": "7de10834-37d1-4e9a-9c29-83ee95aba208",
+        "buildPollingTimeout": "1",
+		"ucvAccessKey": "admin"
+      },
+      "image": "urbancode/ucv-ext-ucd:4.0.9"
+    }
+  ],
+  "linkRules": [],
+  "metrics": null,
+  "metricsBar": [
+    {
+      "__typename": "Chartable",
+      "_id": "67d044daf2a05b493ac4fb84",
+      "name": "Distribution",
+      "drillDowns": null,
+      "layout": {
+        "barType": "percent"
+      },
+      "overlays": [],
+      "filters": {
+        "dql": "timestamp < 30d AND cycleType = \"leadTime\""
+      }
+    },
+    {
+      "__typename": "Chartable",
+      "_id": "67d044daf2a05b493ac4fb4f",
+      "name": "Throughput",
+      "drillDowns": null,
+      "layout": {
+        "comparisonType": "percentageChange"
+      },
+      "overlays": [
+        {
+          "_id": "67d044daf2a05b493ac4fb4c",
+          "name": "Previous Throughput",
+          "layout": {
+            "comparisonType": "percentageChange"
+          },
+          "filters": {
+            "dql": "timestamp > 30d AND timestamp < 60d AND cycleType = \"leadTime\""
+          }
+        }
+      ],
+      "filters": {
+        "dql": "timestamp < 30d AND cycleType = \"leadTime\""
+      }
+    }
+  ]
+}
